@@ -1,4 +1,4 @@
-package com.num3rd.mapreduce.demo.mos;
+package com.num3rd.mapreduce.demo.common.compress;
 
 import org.junit.Test;
 

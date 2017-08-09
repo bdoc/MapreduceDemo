@@ -2,8 +2,6 @@ package com.num3rd.mapreduce.demo.common;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by pipe on 3/16/17.
  */
