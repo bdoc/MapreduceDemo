@@ -8,10 +8,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.*;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -70,7 +67,10 @@ public class WordCount {
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
+        // MapFileOutputFormat, SequenceFileOutputFormat, TextOutputFormat
         MultipleOutputs.addNamedOutput(job, "mos", TextOutputFormat.class, Text.class, IntWritable.class);
+        //MultipleOutputs.addNamedOutput(job, "mos", MapFileOutputFormat.class, Text.class, IntWritable.class);
+        //MultipleOutputs.addNamedOutput(job, "mos", SequenceFileOutputFormat.class, Text.class, IntWritable.class);
         MultipleOutputs.setCountersEnabled(job, true);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
