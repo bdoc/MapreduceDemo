@@ -76,10 +76,11 @@ public class WordCount {
         //FileOutputFormat.setOutputCompressorClass(job, DefaultCodec.class);
         FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);
 
+        MultipleOutputs.addNamedOutput(job, "mos", TextOutputFormat.class, Text.class, IntWritable.class);
         LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
-        MultipleOutputs.addNamedOutput(job, "mos", TextOutputFormat.class, Text.class, IntWritable.class);
         MultipleOutputs.setCountersEnabled(job, true);
+
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

@@ -68,13 +68,17 @@ public class WordCount {
         job.setMapOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
         // MapFileOutputFormat, SequenceFileOutputFormat, TextOutputFormat
         MultipleOutputs.addNamedOutput(job, "mos", TextOutputFormat.class, Text.class, IntWritable.class);
+        LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
         //MultipleOutputs.addNamedOutput(job, "mos", MapFileOutputFormat.class, Text.class, IntWritable.class);
+        //LazyOutputFormat.setOutputFormatClass(job, MapFileOutputFormat.class);
         //MultipleOutputs.addNamedOutput(job, "mos", SequenceFileOutputFormat.class, Text.class, IntWritable.class);
+        //LazyOutputFormat.setOutputFormatClass(job, SequenceFileOutputFormat.class);
+
         MultipleOutputs.setCountersEnabled(job, true);
+
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
