@@ -1,9 +1,12 @@
-package com.num3rd.mapreduce.demo.mos;
+package com.num3rd.mapreduce.demo.mos.compress;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.BZip2Codec;
+import org.apache.hadoop.io.compress.DefaultCodec;
+import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -68,6 +71,10 @@ public class WordCount {
         job.setMapOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        FileOutputFormat.setCompressOutput(job, true);
+        //FileOutputFormat.setOutputCompressorClass(job, BZip2Codec.class);
+        //FileOutputFormat.setOutputCompressorClass(job, DefaultCodec.class);
+        FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);
         LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
         MultipleOutputs.addNamedOutput(job, "mos", TextOutputFormat.class, Text.class, IntWritable.class);
