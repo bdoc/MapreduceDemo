@@ -74,15 +74,6 @@ public class WordCount {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "word count");
-
-        for (int i = 1; i <= 3; i ++) {
-            String namedOutput = "mos" + i;
-            // MapFileOutputFormat, SequenceFileOutputFormat, TextOutputFormat
-            MultipleOutputs.addNamedOutput(job, namedOutput, TextOutputFormat.class, Text.class, IntWritable.class);
-            //MultipleOutputs.addNamedOutput(job, namedOutput, MapFileOutputFormat.class, Text.class, IntWritable.class);
-            //MultipleOutputs.addNamedOutput(job, namedOutput, SequenceFileOutputFormat.class, Text.class, IntWritable.class);
-        }
-
         job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(combinerReducer.class);
@@ -93,6 +84,13 @@ public class WordCount {
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
+        for (int i = 1; i <= 3; i ++) {
+            String namedOutput = "mos" + i;
+            // MapFileOutputFormat, SequenceFileOutputFormat, TextOutputFormat
+            MultipleOutputs.addNamedOutput(job, namedOutput, TextOutputFormat.class, Text.class, IntWritable.class);
+            //MultipleOutputs.addNamedOutput(job, namedOutput, MapFileOutputFormat.class, Text.class, IntWritable.class);
+            //MultipleOutputs.addNamedOutput(job, namedOutput, SequenceFileOutputFormat.class, Text.class, IntWritable.class);
+        }
         MultipleOutputs.setCountersEnabled(job, true);
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);

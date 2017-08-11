@@ -75,12 +75,6 @@ public class WordCount {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "word count");
-
-        for (int i = 1; i <= 3; i ++) {
-            String namedOutput = "mos" + i;
-            MultipleOutputs.addNamedOutput(job, namedOutput, TextOutputFormat.class, Text.class, IntWritable.class);
-        }
-
         job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(combinerReducer.class);
@@ -97,6 +91,10 @@ public class WordCount {
         //FileOutputFormat.setOutputCompressorClass(job, DefaultCodec.class);
         FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);
 
+        for (int i = 1; i <= 3; i ++) {
+            String namedOutput = "mos" + i;
+            MultipleOutputs.addNamedOutput(job, namedOutput, TextOutputFormat.class, Text.class, IntWritable.class);
+        }
         MultipleOutputs.setCountersEnabled(job, true);
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);
