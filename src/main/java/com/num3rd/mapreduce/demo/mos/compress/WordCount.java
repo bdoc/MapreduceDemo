@@ -49,7 +49,8 @@ public class WordCount {
                 sum += val.get();
             }
             result.set(sum);
-            mos.write("mos", key, result, result.toString());
+            String namedOutput = "mos" + result.toString();
+            mos.write(namedOutput, key, result, result.toString());
         }
 
         @Override
@@ -61,6 +62,12 @@ public class WordCount {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "word count");
+
+        for (int i = 1; i <= 3; i ++) {
+            String namedOutput = "mos" + i;
+            MultipleOutputs.addNamedOutput(job, namedOutput, TextOutputFormat.class, Text.class, IntWritable.class);
+        }
+
         job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
@@ -70,14 +77,12 @@ public class WordCount {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         FileOutputFormat.setCompressOutput(job, true);
+        LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
         // BZip2Codec, DefaultCodec, GzipCodec
         //FileOutputFormat.setOutputCompressorClass(job, BZip2Codec.class);
         //FileOutputFormat.setOutputCompressorClass(job, DefaultCodec.class);
         FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);
-
-        MultipleOutputs.addNamedOutput(job, "mos", TextOutputFormat.class, Text.class, IntWritable.class);
-        LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
 
         MultipleOutputs.setCountersEnabled(job, true);
 
