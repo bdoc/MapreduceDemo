@@ -80,11 +80,12 @@ public class WordCount {
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(CombinerReducer.class);
         job.setReducerClass(IntSumReducer.class);
+
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
+
         job.setOutputKeyClass(Void.class);
         job.setOutputValueClass(Group.class);
-
         job.setOutputFormatClass(AvroParquetOutputFormat.class);
         AvroParquetOutputFormat.setSchema(job, SCHEMA);
 
