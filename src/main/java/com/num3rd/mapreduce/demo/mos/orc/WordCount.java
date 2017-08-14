@@ -38,7 +38,7 @@ public class WordCount {
         }
     }
 
-    public static class CombinerReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class combinerReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         private IntWritable result = new IntWritable();
 
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -59,7 +59,6 @@ public class WordCount {
         private OrcList<IntWritable> valueList = (OrcList<IntWritable>) pair.getFieldValue(1);
         private final NullWritable nada = NullWritable.get();
 
-        private IntWritable result = new IntWritable();
         private MultipleOutputs mos;
 
         @Override
@@ -88,7 +87,7 @@ public class WordCount {
         Job job = Job.getInstance(conf, "word count");
         job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
-        job.setCombinerClass(CombinerReducer.class);
+        job.setCombinerClass(combinerReducer.class);
         job.setReducerClass(IntSumReducer.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
