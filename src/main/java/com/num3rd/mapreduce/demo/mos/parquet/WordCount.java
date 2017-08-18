@@ -72,6 +72,8 @@ public class WordCount {
         }
 
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            context.getConfiguration().set("parquet.avro.schema", SCHEMA.toString());
+
             int sum = 0;
             for (IntWritable val : values) {
                 sum += val.get();
@@ -105,7 +107,7 @@ public class WordCount {
         for (int i = 1; i <= 3; i ++) {
             String namedOutput = "mos" + i;
             MultipleOutputs.addNamedOutput(job, namedOutput, AvroParquetOutputFormat.class, Void.class, Group.class);
-            AvroParquetOutputFormat.setSchema(job, SCHEMA);
+            //AvroParquetOutputFormat.setSchema(job, SCHEMA);
         }
         MultipleOutputs.setCountersEnabled(job, true);
 

@@ -67,6 +67,8 @@ public class WordCount {
         }
 
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            context.getConfiguration().set("orc.mapred.output.schema","struct<key:string,ints:array<int>>");
+
             pair.setFieldValue(0, key);
             valueList.clear();
             for(IntWritable val: values) {
@@ -97,7 +99,6 @@ public class WordCount {
 
         for (int i = 1; i <= 3; i ++) {
             String namedOutput = "mos" + i;
-            job.getConfiguration().set("orc.mapred.output.schema","struct<key:string,ints:array<int>>");
             MultipleOutputs.addNamedOutput(job, namedOutput, OrcOutputFormat.class, Text.class, IntWritable.class);
         }
         MultipleOutputs.setCountersEnabled(job, true);
