@@ -25,16 +25,6 @@ import java.util.StringTokenizer;
  * Created by pipe on 3/15/17.
  */
 public class WordCount {
-    private static Schema SCHEMA = new Schema.Parser().parse("" +
-            "{\n" +
-            "   \"type\": \"record\",\n" +
-            "   \"name\": \"Word\",\n" +
-            "   \"fields\":[\n" +
-            "       {\"name\":\"word\", \"type\":\"string\"},\n" +
-            "       {\"name\":\"count\", \"type\":\"int\"}\n" +
-            "   ]\n" +
-            "}"
-    );
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
@@ -63,7 +53,6 @@ public class WordCount {
     }
 
     public static class IntSumReducer extends Reducer<Text, IntWritable, Void, GenericRecord> {
-        private GenericRecord record = new GenericData.Record(SCHEMA);
         private MultipleOutputs mos;
 
         @Override
@@ -72,6 +61,17 @@ public class WordCount {
         }
 
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            Schema SCHEMA = new Schema.Parser().parse("" +
+                    "{\n" +
+                    "   \"type\": \"record\",\n" +
+                    "   \"name\": \"Word\",\n" +
+                    "   \"fields\":[\n" +
+                    "       {\"name\":\"word\", \"type\":\"string\"},\n" +
+                    "       {\"name\":\"count\", \"type\":\"int\"}\n" +
+                    "   ]\n" +
+                    "}"
+            );
+            GenericRecord record = new GenericData.Record(SCHEMA);
             context.getConfiguration().set("parquet.avro.schema", SCHEMA.toString());
 
             int sum = 0;
@@ -107,7 +107,6 @@ public class WordCount {
         for (int i = 1; i <= 3; i ++) {
             String namedOutput = "mos" + i;
             MultipleOutputs.addNamedOutput(job, namedOutput, AvroParquetOutputFormat.class, Void.class, Group.class);
-            //AvroParquetOutputFormat.setSchema(job, SCHEMA);
         }
         MultipleOutputs.setCountersEnabled(job, true);
 

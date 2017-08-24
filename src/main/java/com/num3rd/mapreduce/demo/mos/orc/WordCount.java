@@ -52,12 +52,6 @@ public class WordCount {
     }
 
     public static class IntSumReducer extends Reducer<Text, IntWritable, NullWritable, OrcStruct> {
-        private TypeDescription schema = TypeDescription.fromString("struct<key:string,ints:array<int>>");
-        // createValue creates the correct value type for the schema
-        private OrcStruct pair = (OrcStruct) OrcStruct.createValue(schema);
-        // get a handle to the list of ints
-        private OrcList<IntWritable> valueList = (OrcList<IntWritable>) pair.getFieldValue(1);
-        private final NullWritable nada = NullWritable.get();
 
         private MultipleOutputs mos;
 
@@ -67,7 +61,14 @@ public class WordCount {
         }
 
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            context.getConfiguration().set("orc.mapred.output.schema","struct<key:string,ints:array<int>>");
+            TypeDescription schema = TypeDescription.fromString("struct<key:string,ints:array<int>>");
+            // createValue creates the correct value type for the schema
+            OrcStruct pair = (OrcStruct) OrcStruct.createValue(schema);
+            // get a handle to the list of ints
+            OrcList<IntWritable> valueList = (OrcList<IntWritable>) pair.getFieldValue(1);
+            final NullWritable nada = NullWritable.get();
+
+            context.getConfiguration().set("orc.mapred.output.schema",schema.toString());
 
             pair.setFieldValue(0, key);
             valueList.clear();
